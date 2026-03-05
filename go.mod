@@ -1,4 +1,4 @@
-module github.com/sparetimecoders/gomessaging/nats
+module github.com/sparetimecoders/go-messaging-nats
 
 go 1.24.0
 
@@ -42,4 +42,9 @@ require (
 	golang.org/x/time v0.14.0 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+)
+
+replace (
+	github.com/sparetimecoders/gomessaging/spec => ../messaging
+	github.com/sparetimecoders/gomessaging/tck => ../messaging/tck
 )

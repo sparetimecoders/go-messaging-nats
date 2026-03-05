@@ -33,7 +33,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/sparetimecoders/gomessaging/nats"
+	nats "github.com/sparetimecoders/go-messaging-nats"
 	"github.com/sparetimecoders/gomessaging/spec"
 	"github.com/sparetimecoders/gomessaging/spec/spectest"
 	"github.com/sparetimecoders/gomessaging/tck"
