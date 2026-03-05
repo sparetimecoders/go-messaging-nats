@@ -14,6 +14,8 @@
 
 This package implements the [gomessaging specification](https://github.com/sparetimecoders/messaging) for NATS. It uses **JetStream** for durable event streams and custom streams, and **Core NATS** for request-reply patterns. The API mirrors the AMQP transport -- swap `amqp` for `nats` and it works.
 
+> **Deep dives**: See the [docs/](docs/) directory for detailed guides on [connection lifecycle](docs/connection.md), [consumers](docs/consumers.md), [publishers](docs/publishers.md), [request-response](docs/request-response.md), [streams & retention](docs/streams.md), and [observability](docs/observability.md).
+
 ## Installation
 
 ```bash
