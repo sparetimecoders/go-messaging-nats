@@ -7,8 +7,8 @@ require (
 	github.com/nats-io/nats-server/v2 v2.12.4
 	github.com/nats-io/nats.go v1.48.0
 	github.com/prometheus/client_golang v1.23.2
-	github.com/sparetimecoders/gomessaging/spec v0.1.0
-	github.com/sparetimecoders/gomessaging/tck v0.1.0
+	github.com/sparetimecoders/messaging/specification/spec v0.0.1
+	github.com/sparetimecoders/messaging/specification/tck v0.0.1
 	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/otel v1.40.0
 	go.opentelemetry.io/otel/sdk v1.40.0
@@ -42,9 +42,4 @@ require (
 	golang.org/x/time v0.14.0 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-)
-
-replace (
-	github.com/sparetimecoders/gomessaging/spec => ../messaging
-	github.com/sparetimecoders/gomessaging/tck => ../messaging/tck
 )

@@ -27,7 +27,7 @@ import (
 	"fmt"
 
 	natsgo "github.com/nats-io/nats.go"
-	"github.com/sparetimecoders/gomessaging/spec"
+	"github.com/sparetimecoders/messaging/specification/spec"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/propagation"
