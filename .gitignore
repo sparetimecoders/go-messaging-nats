@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Claude Code
+.claude/
+
+# Go
+go.work.sum
+*.exe
+*.test
+*.out
+coverage.out
+
+# Binaries
+cmd/tck-adapter/tck-adapter
