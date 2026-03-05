@@ -1,4 +1,4 @@
-# gomessaging/nats
+# go-messaging-nats
 
 <p align="center">
   <strong>NATS/JetStream transport for the gomessaging framework.</strong>
@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/sparetimecoders/go-messaging-nats/actions"><img alt="CI" src="https://github.com/sparetimecoders/go-messaging-nats/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://pkg.go.dev/github.com/sparetimecoders/gomessaging/nats"><img alt="Go Reference" src="https://pkg.go.dev/badge/github.com/sparetimecoders/gomessaging/nats.svg"></a>
+  <a href="https://pkg.go.dev/github.com/sparetimecoders/go-messaging-nats"><img alt="Go Reference" src="https://pkg.go.dev/badge/github.com/sparetimecoders/go-messaging-nats.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
 </p>
 
@@ -17,7 +17,7 @@ This package implements the [gomessaging specification](https://github.com/spare
 ## Installation
 
 ```bash
-go get github.com/sparetimecoders/gomessaging/nats
+go get github.com/sparetimecoders/go-messaging-nats
 ```
 
 ## Quick Start
@@ -30,7 +30,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/sparetimecoders/gomessaging/nats"
+    nats "github.com/sparetimecoders/go-messaging-nats"
     "github.com/sparetimecoders/gomessaging/spec"
 )
 

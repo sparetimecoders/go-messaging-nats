@@ -34,7 +34,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-const tracerName = "github.com/sparetimecoders/gomessaging/nats"
+const tracerName = "github.com/sparetimecoders/go-messaging-nats"
 
 var (
 	attrMessagingSystem       = attribute.String("messaging.system", "nats")
