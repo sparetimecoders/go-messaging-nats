@@ -33,7 +33,7 @@ import (
     "log"
 
     nats "github.com/sparetimecoders/go-messaging-nats"
-    "github.com/sparetimecoders/gomessaging/spec"
+    "github.com/sparetimecoders/messaging/specification/spec"
 )
 
 type OrderCreated struct {
