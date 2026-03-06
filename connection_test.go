@@ -55,6 +55,37 @@ func TestNewConnection(t *testing.T) {
 	})
 }
 
+func TestConnectionStartStop(t *testing.T) {
+	s := startTestServer(t)
+	url := serverURL(s)
+
+	conn, err := NewConnection("test-service", url)
+	require.NoError(t, err)
+
+	err = conn.Start(context.Background(), WithLogger(slog.Default()))
+	require.NoError(t, err)
+
+	assert.Equal(t, "test-service", conn.Topology().ServiceName)
+
+	err = conn.Close()
+	require.NoError(t, err)
+}
+
+func TestConnectionAlreadyStarted(t *testing.T) {
+	s := startTestServer(t)
+	url := serverURL(s)
+
+	conn, err := NewConnection("test-service", url)
+	require.NoError(t, err)
+
+	err = conn.Start(context.Background())
+	require.NoError(t, err)
+	defer func() { require.NoError(t, conn.Close()) }()
+
+	err = conn.Start(context.Background())
+	assert.ErrorIs(t, err, ErrAlreadyStarted)
+}
+
 func TestConnectionFailedConnect(t *testing.T) {
 	conn, err := NewConnection("test-service", "nats://localhost:1")
 	require.NoError(t, err)
