@@ -153,7 +153,7 @@ func (a *natsIntegrationAdapter) StartService(t spectest.T, serviceName string, 
 
 func TestIntegrationTCK(t *testing.T) {
 	wt := spectest.WrapT(t)
-	scenarios := tck.LoadScenarios(wt, "../../specification/spec/testdata/tck.json")
+	scenarios := tck.LoadScenarios(wt, "testdata/tck.json")
 	for _, scenario := range scenarios {
 		t.Run(scenario.Name, func(t *testing.T) {
 			s := startTestServer(t)
@@ -167,12 +167,12 @@ func TestIntegrationTCKSubprocess(t *testing.T) {
 	// Build the nats-adapter binary from the tck-adapters module.
 	binDir := t.TempDir()
 	binPath := filepath.Join(binDir, "nats-adapter")
-	build := exec.Command("go", "build", "-o", binPath, "github.com/sparetimecoders/messaging/golang/tck-adapters/cmd/nats-adapter")
+	build := exec.Command("go", "build", "-o", binPath, "./cmd/tck-adapter")
 	out, err := build.CombinedOutput()
 	require.NoError(t, err, "failed to build nats-adapter: %s", out)
 
 	wt := spectest.WrapT(t)
-	scenarios := tck.LoadScenarios(wt, "../../specification/spec/testdata/tck.json")
+	scenarios := tck.LoadScenarios(wt, "testdata/tck.json")
 	for _, scenario := range scenarios {
 		t.Run(scenario.Name, func(t *testing.T) {
 			s := startTestServer(t)
