@@ -15,7 +15,7 @@ repos:
         args: ["-w"]
 
   - repo: https://github.com/golangci/golangci-lint
-    rev: v2.10.1
+    rev: v2.11.2
     hooks:
       - id: golangci-lint
 
@@ -25,6 +25,6 @@ repos:
       - id: actionlint
 
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.22.0
+    rev: v1.23.1
     hooks:
       - id: zizmor
