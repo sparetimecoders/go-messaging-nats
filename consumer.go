@@ -23,6 +23,7 @@
 package nats
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -183,7 +184,7 @@ func (c *jsConsumer) handleDelivery(handler wrappedHandler, msg jetstream.Msg, r
 		)
 	}
 
-	headerCtx := extractToContext(msg.Headers(), c.propagator)
+	headerCtx := extractToContext(context.Background(), msg.Headers(), c.propagator)
 	messageID, _ := headers[spec.CEID].(string)
 	spanAttrs := consumerSpanAttributes(deliveryInfo, c.serviceName, messageID, len(msg.Data()))
 	tracingCtx, span := c.getTracer().Start(headerCtx, c.spanNameFn(deliveryInfo),
@@ -265,7 +266,7 @@ func (c *jsConsumer) handleCoreMessage(msg *natsgo.Msg, routingKey string) {
 		Headers:     headers,
 	}
 
-	headerCtx := extractToContext(msg.Header, c.propagator)
+	headerCtx := extractToContext(context.Background(), msg.Header, c.propagator)
 	messageID, _ := headers[spec.CEID].(string)
 	spanAttrs := consumerSpanAttributes(deliveryInfo, c.serviceName, messageID, len(msg.Data))
 	tracingCtx, span := c.getTracer().Start(headerCtx, c.spanNameFn(deliveryInfo),
