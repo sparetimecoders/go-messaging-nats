@@ -113,7 +113,7 @@ func (c *Connection) startRequestResponseConsumer(subject, routingKey, consName 
 			Payload:      msg.Data,
 		}
 
-		headerCtx := extractToContext(msg.Header, consumer.propagator)
+		headerCtx := extractToContext(context.Background(), msg.Header, consumer.propagator)
 		messageID, _ := headers[spec.CEID].(string)
 		spanAttrs := consumerSpanAttributes(deliveryInfo, c.serviceName, messageID, len(msg.Data))
 		tracingCtx, span := consumer.getTracer().Start(headerCtx, consumer.spanNameFn(deliveryInfo),

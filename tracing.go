@@ -101,11 +101,12 @@ func injectToHeaders(ctx context.Context, headers natsgo.Header, p propagation.T
 	return headers
 }
 
-// extractToContext extracts the span context from NATS headers.
-func extractToContext(headers natsgo.Header, p propagation.TextMapPropagator) context.Context {
+// extractToContext extracts the span context from NATS headers into a child of
+// the given parent context, preserving deadlines, cancellation, and values.
+func extractToContext(ctx context.Context, headers natsgo.Header, p propagation.TextMapPropagator) context.Context {
 	carrier := propagation.MapCarrier{}
 	for k := range headers {
 		carrier[k] = headers.Get(k)
 	}
-	return propagatorOrGlobal(p).Extract(context.Background(), carrier)
+	return propagatorOrGlobal(p).Extract(ctx, carrier)
 }
