@@ -200,18 +200,10 @@ func InitMetrics(registerer prometheus.Registerer, opts ...MetricsOption) error 
 		eventPublishDuration,
 	}
 	for _, collector := range collectors {
-		mv, ok := collector.(metricResetter)
-		if ok {
-			mv.Reset()
-		}
 		err := registerer.Register(collector)
 		if err != nil && !errors.As(err, &prometheus.AlreadyRegisteredError{}) {
 			return err
 		}
 	}
 	return nil
-}
-
-type metricResetter interface {
-	Reset()
 }

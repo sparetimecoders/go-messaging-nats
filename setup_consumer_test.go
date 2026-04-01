@@ -68,7 +68,8 @@ func TestServiceRequestConsumer(t *testing.T) {
 	require.NoError(t, err)
 	defer nc.Close()
 
-	payload, _ := json.Marshal(testMessage{Name: "send-email", Value: 42})
+	payload, err := json.Marshal(testMessage{Name: "send-email", Value: 42})
+	require.NoError(t, err)
 	err = nc.Publish("email-svc.request.email.send", payload)
 	require.NoError(t, err)
 
@@ -109,7 +110,8 @@ func TestRequestResponseHandler(t *testing.T) {
 	require.NoError(t, err)
 	defer nc.Close()
 
-	payload, _ := json.Marshal(testMessage{Name: "send-email", Value: 1})
+	payload, err := json.Marshal(testMessage{Name: "send-email", Value: 1})
+	require.NoError(t, err)
 	msg := &natsgo.Msg{
 		Subject: "email-svc.request.email.send",
 		Data:    payload,
@@ -185,7 +187,8 @@ func TestRequestResponseHandler_Error(t *testing.T) {
 	require.NoError(t, err)
 	defer nc.Close()
 
-	payload, _ := json.Marshal(testMessage{Name: "send-email", Value: 1})
+	payload, err := json.Marshal(testMessage{Name: "send-email", Value: 1})
+	require.NoError(t, err)
 	msg := &natsgo.Msg{
 		Subject: "email-svc.request.email.send",
 		Data:    payload,
@@ -258,7 +261,8 @@ func TestServiceRequestConsumer_HandlerError(t *testing.T) {
 	require.NoError(t, err)
 	defer nc.Close()
 
-	payload, _ := json.Marshal(testMessage{Name: "test", Value: 1})
+	payload, err := json.Marshal(testMessage{Name: "test", Value: 1})
+	require.NoError(t, err)
 	// Use request to get the error response back
 	msg := &natsgo.Msg{
 		Subject: "err-core-svc.request.email.send",
@@ -325,6 +329,27 @@ func TestTypeMappingHandler_UnknownRoutingKey(t *testing.T) {
 	}
 	err := handler(context.Background(), evt)
 	assert.ErrorIs(t, err, ErrNoMessageTypeForRouteKey)
+}
+
+func TestTypeMappingHandler_InvalidJSON(t *testing.T) {
+	type orderCreated struct {
+		OrderID string `json:"orderId"`
+	}
+
+	mapper := func(routingKey string) (reflect.Type, bool) {
+		return reflect.TypeOf((*orderCreated)(nil)), true
+	}
+
+	handler := TypeMappingHandler(func(ctx context.Context, event spec.ConsumableEvent[any]) error {
+		return nil
+	}, mapper)
+
+	evt := spec.ConsumableEvent[any]{
+		DeliveryInfo: spec.DeliveryInfo{Key: "Order.Created"},
+		Payload:      json.RawMessage([]byte("not valid json")),
+	}
+	err := handler(context.Background(), evt)
+	assert.ErrorIs(t, err, spec.ErrParseJSON)
 }
 
 func TestConsumerWithMaxDeliver(t *testing.T) {

@@ -58,6 +58,9 @@ func serviceRequestSubject(service, routingKey string) string {
 }
 
 // consumerName returns the durable consumer name for a service on a stream.
+// It is intentionally an identity function: the service name alone is sufficient
+// as the consumer name because each service has at most one durable consumer per
+// stream, making the service name a natural unique identifier.
 func consumerName(service string) string {
 	return service
 }
