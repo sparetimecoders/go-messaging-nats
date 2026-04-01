@@ -68,7 +68,8 @@ func TestServiceRequestConsumer(t *testing.T) {
 	require.NoError(t, err)
 	defer nc.Close()
 
-	payload, _ := json.Marshal(testMessage{Name: "send-email", Value: 42})
+	payload, err := json.Marshal(testMessage{Name: "send-email", Value: 42})
+	require.NoError(t, err)
 	err = nc.Publish("email-svc.request.email.send", payload)
 	require.NoError(t, err)
 
@@ -109,7 +110,8 @@ func TestRequestResponseHandler(t *testing.T) {
 	require.NoError(t, err)
 	defer nc.Close()
 
-	payload, _ := json.Marshal(testMessage{Name: "send-email", Value: 1})
+	payload, err := json.Marshal(testMessage{Name: "send-email", Value: 1})
+	require.NoError(t, err)
 	msg := &natsgo.Msg{
 		Subject: "email-svc.request.email.send",
 		Data:    payload,
@@ -185,7 +187,8 @@ func TestRequestResponseHandler_Error(t *testing.T) {
 	require.NoError(t, err)
 	defer nc.Close()
 
-	payload, _ := json.Marshal(testMessage{Name: "send-email", Value: 1})
+	payload, err := json.Marshal(testMessage{Name: "send-email", Value: 1})
+	require.NoError(t, err)
 	msg := &natsgo.Msg{
 		Subject: "email-svc.request.email.send",
 		Data:    payload,
@@ -258,7 +261,8 @@ func TestServiceRequestConsumer_HandlerError(t *testing.T) {
 	require.NoError(t, err)
 	defer nc.Close()
 
-	payload, _ := json.Marshal(testMessage{Name: "test", Value: 1})
+	payload, err := json.Marshal(testMessage{Name: "test", Value: 1})
+	require.NoError(t, err)
 	// Use request to get the error response back
 	msg := &natsgo.Msg{
 		Subject: "err-core-svc.request.email.send",

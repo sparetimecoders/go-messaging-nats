@@ -24,6 +24,7 @@ package nats
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"reflect"
@@ -84,11 +85,11 @@ type jsConsumerHandle struct {
 
 var (
 	// ErrAlreadyStarted is returned when Start is called on an already-started connection.
-	ErrAlreadyStarted = fmt.Errorf("already started")
+	ErrAlreadyStarted = errors.New("already started")
 	// ErrEmptySuffix is returned when an empty suffix is passed to AddConsumerNameSuffix.
-	ErrEmptySuffix = fmt.Errorf("empty consumer suffix not allowed")
+	ErrEmptySuffix = errors.New("empty consumer suffix not allowed")
 	// ErrNoMessageTypeForRouteKey is returned when a TypeMapper has no type for the routing key.
-	ErrNoMessageTypeForRouteKey = fmt.Errorf("no message type for routing key configured")
+	ErrNoMessageTypeForRouteKey = errors.New("no message type for routing key configured")
 )
 
 // NewConnection creates a new Connection for the given service and NATS URL.
@@ -138,6 +139,7 @@ var defaultSpanNameFn = func(info spec.DeliveryInfo) string {
 }
 
 // Start connects to NATS, applies setup functions, and starts all consumers.
+// Start must not be called concurrently. It is a once-per-lifetime initialization method.
 func (c *Connection) Start(ctx context.Context, opts ...Setup) error {
 	if c.started {
 		return ErrAlreadyStarted

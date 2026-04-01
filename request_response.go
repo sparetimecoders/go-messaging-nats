@@ -62,7 +62,7 @@ func requestResponseWrapper[T any, R any](handler spec.RequestResponseEventHandl
 	return func(ctx context.Context, event unmarshalEvent) (json.RawMessage, error) {
 		var payload T
 		if err := json.Unmarshal(event.Payload, &payload); err != nil {
-			return nil, fmt.Errorf("%v: %w", err, spec.ErrParseJSON)
+			return nil, fmt.Errorf("%w: %v", spec.ErrParseJSON, err)
 		}
 
 		consumableEvent := spec.ConsumableEvent[T]{

@@ -26,8 +26,18 @@ import (
 	"testing"
 
 	"github.com/prometheus/client_golang/prometheus"
+	dto "github.com/prometheus/client_model/go"
 	"github.com/stretchr/testify/assert"
 )
+
+// labelMap extracts label name-value pairs from a Prometheus metric for easier assertion.
+func labelMap(m *dto.Metric) map[string]string {
+	result := make(map[string]string, len(m.GetLabel()))
+	for _, lp := range m.GetLabel() {
+		result[lp.GetName()] = lp.GetValue()
+	}
+	return result
+}
 
 func TestInitMetrics(t *testing.T) {
 	registry := prometheus.NewRegistry()
@@ -82,11 +92,9 @@ func TestInitMetrics_DefaultMapper(t *testing.T) {
 	for _, f := range families {
 		if f.GetName() == "nats_events_received" {
 			for _, m := range f.GetMetric() {
-				for _, lp := range m.GetLabel() {
-					if *lp.Name == "routing_key" {
-						assert.Equal(t, "Order.Created", *lp.Value)
-						found = true
-					}
+				labels := labelMap(m)
+				if labels["consumer"] == "consumer" && labels["routing_key"] == "Order.Created" {
+					found = true
 				}
 			}
 		}
@@ -108,11 +116,9 @@ func TestInitMetrics_WithRoutingKeyMapper(t *testing.T) {
 	for _, f := range families {
 		if f.GetName() == "nats_events_received" {
 			for _, m := range f.GetMetric() {
-				for _, lp := range m.GetLabel() {
-					if *lp.Name == "routing_key" {
-						assert.Equal(t, "mapped.Order.Created", *lp.Value)
-						found = true
-					}
+				labels := labelMap(m)
+				if labels["consumer"] == "consumer" && labels["routing_key"] == "mapped.Order.Created" {
+					found = true
 				}
 			}
 		}
@@ -133,11 +139,9 @@ func TestInitMetrics_PublisherUsesRoutingKeyValue(t *testing.T) {
 	for _, f := range families {
 		if f.GetName() == "nats_events_publish_succeed" {
 			for _, m := range f.GetMetric() {
-				for _, lp := range m.GetLabel() {
-					if *lp.Name == "routing_key" {
-						assert.Equal(t, "Order.Created", *lp.Value)
-						found = true
-					}
+				labels := labelMap(m)
+				if labels["stream"] == "events" && labels["routing_key"] == "Order.Created" {
+					found = true
 				}
 			}
 		}
@@ -159,11 +163,9 @@ func TestInitMetrics_EmptyMapperReturnsFallback(t *testing.T) {
 	for _, f := range families {
 		if f.GetName() == "nats_events_received" {
 			for _, m := range f.GetMetric() {
-				for _, lp := range m.GetLabel() {
-					if *lp.Name == "routing_key" {
-						assert.Equal(t, "unknown", *lp.Value)
-						found = true
-					}
+				labels := labelMap(m)
+				if labels["consumer"] == "consumer" && labels["routing_key"] == "unknown" {
+					found = true
 				}
 			}
 		}

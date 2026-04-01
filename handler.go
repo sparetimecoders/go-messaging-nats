@@ -57,7 +57,7 @@ func newWrappedHandler[T any](handler spec.EventHandler[T]) wrappedHandler {
 
 		err := json.Unmarshal(event.Payload, &consumableEvent.Payload)
 		if err != nil {
-			return fmt.Errorf("%v: %w", err, spec.ErrParseJSON)
+			return fmt.Errorf("%w: %v", spec.ErrParseJSON, err)
 		}
 		return handler(ctx, consumableEvent)
 	}

@@ -50,7 +50,7 @@ func TypeMappingHandler(handler spec.EventHandler[any], routingKeyToType TypeMap
 		}
 		payload := reflect.New(typ.Elem()).Interface()
 		if err := json.Unmarshal(event.Payload.(json.RawMessage), &payload); err != nil {
-			return fmt.Errorf("%v: %w", err, spec.ErrParseJSON)
+			return fmt.Errorf("%w: %v", spec.ErrParseJSON, err)
 		}
 		event.Payload = payload
 		return handler(ctx, event)
@@ -71,7 +71,7 @@ func StreamConsumer[T any](stream, routingKey string, handler spec.EventHandler[
 			return err
 		}
 
-		if err := c.startJSConsumer(context.Background(), cfg); err != nil {
+		if err := c.startJSConsumer(cfg); err != nil {
 			return err
 		}
 
@@ -106,7 +106,7 @@ func TransientStreamConsumer[T any](stream, routingKey string, handler spec.Even
 			return err
 		}
 
-		if err := c.startJSConsumer(context.Background(), cfg); err != nil {
+		if err := c.startJSConsumer(cfg); err != nil {
 			return err
 		}
 
@@ -173,7 +173,7 @@ func ServiceResponseConsumer[T any](targetService, routingKey string, handler sp
 // Actual consumer creation happens in startPendingJSConsumers after all setup
 // functions have run, so that registrations sharing the same stream+durable
 // are grouped into a single NATS consumer with multiple filter subjects.
-func (c *Connection) startJSConsumer(_ context.Context, cfg *consumerConfig) error {
+func (c *Connection) startJSConsumer(cfg *consumerConfig) error {
 	c.pendingJSConsumers = append(c.pendingJSConsumers, cfg)
 	return nil
 }
