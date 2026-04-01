@@ -331,6 +331,27 @@ func TestTypeMappingHandler_UnknownRoutingKey(t *testing.T) {
 	assert.ErrorIs(t, err, ErrNoMessageTypeForRouteKey)
 }
 
+func TestTypeMappingHandler_InvalidJSON(t *testing.T) {
+	type orderCreated struct {
+		OrderID string `json:"orderId"`
+	}
+
+	mapper := func(routingKey string) (reflect.Type, bool) {
+		return reflect.TypeOf((*orderCreated)(nil)), true
+	}
+
+	handler := TypeMappingHandler(func(ctx context.Context, event spec.ConsumableEvent[any]) error {
+		return nil
+	}, mapper)
+
+	evt := spec.ConsumableEvent[any]{
+		DeliveryInfo: spec.DeliveryInfo{Key: "Order.Created"},
+		Payload:      json.RawMessage([]byte("not valid json")),
+	}
+	err := handler(context.Background(), evt)
+	assert.ErrorIs(t, err, spec.ErrParseJSON)
+}
+
 func TestConsumerWithMaxDeliver(t *testing.T) {
 	s := startTestServer(t)
 	url := serverURL(s)
