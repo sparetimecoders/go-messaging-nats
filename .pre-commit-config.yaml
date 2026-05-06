@@ -15,7 +15,7 @@ repos:
         args: ["-w"]
 
   - repo: https://github.com/golangci/golangci-lint
-    rev: v2.11.2
+    rev: v2.12.2
     hooks:
       - id: golangci-lint
 
