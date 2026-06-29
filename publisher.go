@@ -30,7 +30,7 @@ import (
 	"github.com/google/uuid"
 	natsgo "github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
@@ -95,7 +95,8 @@ func (p *Publisher) publishMessage(ctx context.Context, routingKey string, msg a
 	}
 	subject := fn(p.stream, routingKey)
 	spanAttrs := publishSpanAttributes(p.stream, subject, p.serviceName)
-	ctx, span := tracer.Start(ctx, spanNameFn(p.stream, routingKey),
+	ctx, span := tracer.Start(
+		ctx, spanNameFn(p.stream, routingKey),
 		trace.WithSpanKind(trace.SpanKindProducer),
 		trace.WithAttributes(spanAttrs...),
 	)
