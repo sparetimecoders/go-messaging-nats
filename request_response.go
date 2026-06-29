@@ -28,7 +28,7 @@ import (
 	"fmt"
 
 	natsgo "github.com/nats-io/nats.go"
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -116,7 +116,8 @@ func (c *Connection) startRequestResponseConsumer(subject, routingKey, consName 
 		headerCtx := extractToContext(context.Background(), msg.Header, consumer.propagator)
 		messageID, _ := headers[spec.CEID].(string)
 		spanAttrs := consumerSpanAttributes(deliveryInfo, c.serviceName, messageID, len(msg.Data))
-		tracingCtx, span := consumer.getTracer().Start(headerCtx, consumer.spanNameFn(deliveryInfo),
+		tracingCtx, span := consumer.getTracer().Start(
+			headerCtx, consumer.spanNameFn(deliveryInfo),
 			trace.WithSpanKind(trace.SpanKindConsumer),
 			trace.WithAttributes(spanAttrs...),
 		)
@@ -126,7 +127,8 @@ func (c *Connection) startRequestResponseConsumer(subject, routingKey, consName 
 		if err != nil {
 			span.RecordError(err)
 			span.SetStatus(codes.Error, err.Error())
-			consumer.log().Error("request handler failed",
+			consumer.log().Error(
+				"request handler failed",
 				"routingKey", routingKey,
 				"error", err,
 			)
