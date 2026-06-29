@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	spec "github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -29,7 +29,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -111,7 +111,8 @@ func TestEnsureStream_AppliesDefaults(t *testing.T) {
 	require.NoError(t, err)
 
 	pub := NewPublisher()
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithStreamDefaults(StreamConfig{
 			MaxAge:   24 * time.Hour,
 			MaxBytes: 1024 * 1024, // 1 MiB
@@ -142,7 +143,8 @@ func TestEnsureStream_PerStreamOverride(t *testing.T) {
 
 	eventPub := NewPublisher()
 	auditPub := NewPublisher()
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithStreamDefaults(StreamConfig{MaxAge: 24 * time.Hour}),
 		WithStreamConfig("audit", StreamConfig{MaxAge: 365 * 24 * time.Hour}),
 		EventStreamPublisher(eventPub),
@@ -180,7 +182,8 @@ func TestEnsureStream_DefaultsApplyViaConsumerPath(t *testing.T) {
 	conn, err := NewConnection("consumer-retention-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithStreamDefaults(StreamConfig{
 			MaxAge: 48 * time.Hour,
 		}),
@@ -209,7 +212,8 @@ func TestEnsureStream_NoLimitsWarning(t *testing.T) {
 	require.NoError(t, err)
 
 	pub := NewPublisher()
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithLogger(logger),
 		EventStreamPublisher(pub),
 	)
