@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"github.com/stretchr/testify/assert"
 	"go.opentelemetry.io/otel/propagation"
 )

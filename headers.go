@@ -27,7 +27,7 @@ import (
 	"fmt"
 
 	natsgo "github.com/nats-io/nats.go"
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 )
 
 // Header represents a key-value pair attached to a NATS message.

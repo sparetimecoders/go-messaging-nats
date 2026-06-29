@@ -15,16 +15,16 @@ repos:
         args: ["-w"]
 
   - repo: https://github.com/golangci/golangci-lint
-    rev: v2.11.2
+    rev: v2.12.2
     hooks:
       - id: golangci-lint
 
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.11
+    rev: v1.7.12
     hooks:
       - id: actionlint
 
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.23.1
+    rev: v1.26.1
     hooks:
       - id: zizmor

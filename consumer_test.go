@@ -29,7 +29,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -54,7 +54,8 @@ func TestEventStreamConsumer(t *testing.T) {
 	conn, err := NewConnection("consumer-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler),
 	)
@@ -98,7 +99,8 @@ func TestStreamConsumer(t *testing.T) {
 	conn, err := NewConnection("analytics-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		StreamPublisher("audit", pub),
 		StreamConsumer("audit", "Audit.Entry", handler),
 	)
@@ -141,7 +143,8 @@ func TestConsumerMetadata(t *testing.T) {
 	conn, err := NewConnection("meta-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler),
 	)
@@ -181,7 +184,8 @@ func TestConsumerNotifications(t *testing.T) {
 	conn, err := NewConnection("notif-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithNotificationChannel(notifCh),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler),
@@ -215,7 +219,8 @@ func TestConsumerErrorNotifications(t *testing.T) {
 	conn, err := NewConnection("err-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithErrorChannel(errorCh),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler),
@@ -255,7 +260,8 @@ func TestConsumerWithSuffix(t *testing.T) {
 	conn, err := NewConnection("suffix-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler, AddConsumerNameSuffix("v2")),
 	)
@@ -286,7 +292,8 @@ func TestConsumerHandlerError_GenericNak(t *testing.T) {
 	conn, err := NewConnection("nak-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithErrorChannel(errorCh),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler),
@@ -321,7 +328,8 @@ func TestConsumerHandlerError_NoMessageType(t *testing.T) {
 	conn, err := NewConnection("nomap-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithErrorChannel(errorCh),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler),
