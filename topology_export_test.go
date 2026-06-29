@@ -26,7 +26,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -57,7 +57,8 @@ func TestCollectTopologyStreamPublisher(t *testing.T) {
 
 func TestCollectTopologyEventStreamConsumer(t *testing.T) {
 	handler := func(_ context.Context, _ spec.ConsumableEvent[testMessage]) error { return nil }
-	topo, err := CollectTopology("orders",
+	topo, err := CollectTopology(
+		"orders",
 		EventStreamConsumer("Order.Created", handler),
 	)
 	require.NoError(t, err)
@@ -74,7 +75,8 @@ func TestCollectTopologyEventStreamConsumer(t *testing.T) {
 
 func TestCollectTopologyTransientConsumer(t *testing.T) {
 	handler := func(_ context.Context, _ spec.ConsumableEvent[testMessage]) error { return nil }
-	topo, err := CollectTopology("dashboard",
+	topo, err := CollectTopology(
+		"dashboard",
 		TransientEventStreamConsumer("Order.Created", handler),
 	)
 	require.NoError(t, err)
@@ -88,7 +90,8 @@ func TestCollectTopologyTransientConsumer(t *testing.T) {
 
 func TestCollectTopologyServiceRequest(t *testing.T) {
 	handler := func(_ context.Context, _ spec.ConsumableEvent[testMessage]) error { return nil }
-	topo, err := CollectTopology("email-svc",
+	topo, err := CollectTopology(
+		"email-svc",
 		ServiceRequestConsumer("email.send", handler),
 	)
 	require.NoError(t, err)
@@ -103,7 +106,8 @@ func TestCollectTopologyServiceRequest(t *testing.T) {
 
 func TestCollectTopologyServicePublisher(t *testing.T) {
 	pub := NewPublisher()
-	topo, err := CollectTopology("web-app",
+	topo, err := CollectTopology(
+		"web-app",
 		ServicePublisher("email-svc", pub),
 	)
 	require.NoError(t, err)
@@ -117,7 +121,8 @@ func TestCollectTopologyServicePublisher(t *testing.T) {
 
 func TestCollectTopologyServiceResponse(t *testing.T) {
 	handler := func(_ context.Context, _ spec.ConsumableEvent[testMessage]) error { return nil }
-	topo, err := CollectTopology("web-app",
+	topo, err := CollectTopology(
+		"web-app",
 		ServiceResponseConsumer("email-svc", "email.send", handler),
 	)
 	require.NoError(t, err)
@@ -134,7 +139,8 @@ func TestCollectTopologyMixed(t *testing.T) {
 	pub := NewPublisher()
 	handler := func(_ context.Context, _ spec.ConsumableEvent[testMessage]) error { return nil }
 
-	topo, err := CollectTopology("orders",
+	topo, err := CollectTopology(
+		"orders",
 		EventStreamPublisher(pub),
 		EventStreamConsumer("User.Created", handler),
 	)
