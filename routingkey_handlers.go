@@ -23,7 +23,7 @@
 package nats
 
 import (
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 )
 
 // routingKeyHandler holds the mapping from routing key to a specific handler.
