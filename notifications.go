@@ -22,7 +22,7 @@
 
 package nats
 
-import "github.com/sparetimecoders/messaging/specification/spec"
+import spec "github.com/sparetimecoders/messaging"
 
 func notifyEventHandlerSucceed(ch chan<- spec.Notification, info spec.DeliveryInfo, took int64) {
 	if ch != nil {
