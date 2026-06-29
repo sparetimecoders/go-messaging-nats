@@ -33,7 +33,7 @@ import (
 
 	natsgo "github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -57,7 +57,8 @@ func TestServiceRequestConsumer(t *testing.T) {
 	conn, err := NewConnection("email-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		ServiceRequestConsumer("email.send", handler),
 	)
 	require.NoError(t, err)
@@ -99,7 +100,8 @@ func TestRequestResponseHandler(t *testing.T) {
 	conn, err := NewConnection("email-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		RequestResponseHandler("email.send", handler),
 	)
 	require.NoError(t, err)
@@ -145,7 +147,8 @@ func TestTransientStreamConsumer(t *testing.T) {
 	conn, err := NewConnection("transient-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		EventStreamPublisher(pub),
 		TransientEventStreamConsumer("Order.Created", handler),
 	)
@@ -177,7 +180,8 @@ func TestRequestResponseHandler_Error(t *testing.T) {
 	conn, err := NewConnection("email-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		RequestResponseHandler("email.send", handler),
 	)
 	require.NoError(t, err)
@@ -215,7 +219,8 @@ func TestRequestResponseHandler_InvalidJSON(t *testing.T) {
 	conn, err := NewConnection("email-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		RequestResponseHandler("email.send", handler),
 	)
 	require.NoError(t, err)
@@ -250,7 +255,8 @@ func TestServiceRequestConsumer_HandlerError(t *testing.T) {
 	conn, err := NewConnection("err-core-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithErrorChannel(errorCh),
 		ServiceRequestConsumer("email.send", handler),
 	)
@@ -290,7 +296,8 @@ func TestServicePublisher_CustomTimeout(t *testing.T) {
 	conn, err := NewConnection("timeout-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithRequestTimeout(200*time.Millisecond),
 		ServicePublisher("nonexistent-svc", pub),
 	)
@@ -372,7 +379,8 @@ func TestConsumerWithMaxDeliver(t *testing.T) {
 	conn, err := NewConnection("maxdeliver-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler, WithMaxDeliver(3)),
 	)
@@ -408,9 +416,11 @@ func TestConsumerWithBackOff(t *testing.T) {
 	conn, err := NewConnection("backoff-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		EventStreamPublisher(pub),
-		EventStreamConsumer("Order.Created", handler,
+		EventStreamConsumer(
+			"Order.Created", handler,
 			WithMaxDeliver(5),
 			WithBackOff(200*time.Millisecond, 500*time.Millisecond),
 		),
@@ -454,7 +464,8 @@ func TestConsumerDefaultsMaxDeliver(t *testing.T) {
 	conn, err := NewConnection("defaults-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithConsumerDefaults(ConsumerDefaults{MaxDeliver: 2}),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler),
@@ -511,7 +522,8 @@ func TestTypeMappingHandler(t *testing.T) {
 	conn, err := NewConnection("mapping-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.#", handler),
 	)

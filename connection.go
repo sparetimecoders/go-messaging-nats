@@ -33,7 +33,7 @@ import (
 
 	natsgo "github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -194,7 +194,8 @@ func (c *Connection) Start(ctx context.Context, opts ...Setup) error {
 	}
 
 	c.started = true
-	c.log().Info("connection started",
+	c.log().Info(
+		"connection started",
 		"consumers", len(c.consumers),
 		"subscriptions", len(c.subscriptions),
 	)
@@ -236,7 +237,8 @@ func (c *Connection) ensureStream(ctx context.Context, name string) (jetstream.S
 	cfg.MaxMsgs = sc.MaxMsgs
 
 	if sc.MaxAge == 0 && sc.MaxBytes == 0 && sc.MaxMsgs == 0 {
-		c.log().Warn("stream has no retention limits configured, storage may grow unbounded",
+		c.log().Warn(
+			"stream has no retention limits configured, storage may grow unbounded",
 			"stream", name,
 		)
 	}

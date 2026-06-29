@@ -25,7 +25,7 @@ package nats
 import (
 	"encoding/json"
 
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 )
 
 // unmarshalEvent is used internally to hold the raw message payload
