@@ -25,7 +25,7 @@ package nats
 import (
 	"fmt"
 
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 )
 
 const defaultEventStreamName = "events"

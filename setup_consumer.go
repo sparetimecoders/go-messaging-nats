@@ -30,7 +30,7 @@ import (
 
 	natsgo "github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 )
 
 // TypeMapper resolves a routing key to a concrete Go type.
@@ -274,7 +274,8 @@ func (c *Connection) startPendingJSConsumers(ctx context.Context) error {
 		}
 
 		c.consumers = append(c.consumers, &jsConsumerHandle{ctx: consCtx})
-		c.log().Info("started JetStream consumer",
+		c.log().Info(
+			"started JetStream consumer",
 			"consumer", first.consumerName,
 			"stream", first.stream,
 			"routingKeys", routingKeys,

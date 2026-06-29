@@ -33,7 +33,7 @@ import (
 
 	natsgo "github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
@@ -154,7 +154,8 @@ func (c *jsConsumer) handleMessage(msg jetstream.Msg) {
 
 	handler, ok := c.handlers.get(routingKey)
 	if !ok {
-		c.log().Warn("no handler for routing key, rejecting",
+		c.log().Warn(
+			"no handler for routing key, rejecting",
 			"routingKey", routingKey,
 			"stream", c.stream,
 		)
@@ -177,7 +178,8 @@ func (c *jsConsumer) handleDelivery(handler wrappedHandler, msg jetstream.Msg, r
 	}
 
 	if warnings := spec.ValidateCEHeaders(headers); len(warnings) > 0 {
-		c.log().Warn("incoming message has invalid CloudEvents headers",
+		c.log().Warn(
+			"incoming message has invalid CloudEvents headers",
 			"routingKey", routingKey,
 			"stream", c.stream,
 			"warnings", warnings,
@@ -187,7 +189,8 @@ func (c *jsConsumer) handleDelivery(handler wrappedHandler, msg jetstream.Msg, r
 	headerCtx := extractToContext(context.Background(), msg.Headers(), c.propagator)
 	messageID, _ := headers[spec.CEID].(string)
 	spanAttrs := consumerSpanAttributes(deliveryInfo, c.serviceName, messageID, len(msg.Data()))
-	tracingCtx, span := c.getTracer().Start(headerCtx, c.spanNameFn(deliveryInfo),
+	tracingCtx, span := c.getTracer().Start(
+		headerCtx, c.spanNameFn(deliveryInfo),
 		trace.WithSpanKind(trace.SpanKindConsumer),
 		trace.WithAttributes(spanAttrs...),
 	)
@@ -205,7 +208,8 @@ func (c *jsConsumer) handleDelivery(handler wrappedHandler, msg jetstream.Msg, r
 		elapsed := time.Since(startTime).Milliseconds()
 		notifyEventHandlerFailed(c.errorCh, deliveryInfo, elapsed, err)
 		if errors.Is(err, spec.ErrParseJSON) {
-			c.log().Warn("failed to parse message, terminating",
+			c.log().Warn(
+				"failed to parse message, terminating",
 				"routingKey", routingKey,
 				"stream", c.stream,
 				"error", err,
@@ -213,14 +217,16 @@ func (c *jsConsumer) handleDelivery(handler wrappedHandler, msg jetstream.Msg, r
 			eventNotParsable(c.name, routingKey)
 			_ = msg.Term()
 		} else if errors.Is(err, ErrNoMessageTypeForRouteKey) {
-			c.log().Warn("no type mapping for routing key, terminating",
+			c.log().Warn(
+				"no type mapping for routing key, terminating",
 				"routingKey", routingKey,
 				"stream", c.stream,
 			)
 			eventWithoutHandler(c.name, routingKey)
 			_ = msg.Term()
 		} else {
-			c.log().Error("handler failed, naking for redelivery",
+			c.log().Error(
+				"handler failed, naking for redelivery",
 				"routingKey", routingKey,
 				"stream", c.stream,
 				"error", err,
@@ -237,7 +243,8 @@ func (c *jsConsumer) handleDelivery(handler wrappedHandler, msg jetstream.Msg, r
 	notifyEventHandlerSucceed(c.notificationCh, deliveryInfo, elapsed)
 	_ = msg.Ack()
 	eventAck(c.name, routingKey, elapsed)
-	c.log().Debug("message processed",
+	c.log().Debug(
+		"message processed",
 		"routingKey", routingKey,
 		"stream", c.stream,
 		"durationMs", elapsed,
@@ -250,7 +257,8 @@ func (c *jsConsumer) handleCoreMessage(msg *natsgo.Msg, routingKey string) {
 
 	handler, ok := c.handlers.get(routingKey)
 	if !ok {
-		c.log().Warn("no handler for routing key",
+		c.log().Warn(
+			"no handler for routing key",
 			"routingKey", routingKey,
 			"subject", msg.Subject,
 		)
@@ -269,7 +277,8 @@ func (c *jsConsumer) handleCoreMessage(msg *natsgo.Msg, routingKey string) {
 	headerCtx := extractToContext(context.Background(), msg.Header, c.propagator)
 	messageID, _ := headers[spec.CEID].(string)
 	spanAttrs := consumerSpanAttributes(deliveryInfo, c.serviceName, messageID, len(msg.Data))
-	tracingCtx, span := c.getTracer().Start(headerCtx, c.spanNameFn(deliveryInfo),
+	tracingCtx, span := c.getTracer().Start(
+		headerCtx, c.spanNameFn(deliveryInfo),
 		trace.WithSpanKind(trace.SpanKindConsumer),
 		trace.WithAttributes(spanAttrs...),
 	)
@@ -286,7 +295,8 @@ func (c *jsConsumer) handleCoreMessage(msg *natsgo.Msg, routingKey string) {
 		span.SetStatus(codes.Error, err.Error())
 		elapsed := time.Since(startTime).Milliseconds()
 		notifyEventHandlerFailed(c.errorCh, deliveryInfo, elapsed, err)
-		c.log().Error("handler failed",
+		c.log().Error(
+			"handler failed",
 			"routingKey", routingKey,
 			"error", err,
 			"durationMs", elapsed,
@@ -304,7 +314,8 @@ func (c *jsConsumer) handleCoreMessage(msg *natsgo.Msg, routingKey string) {
 	span.SetStatus(codes.Ok, "")
 	notifyEventHandlerSucceed(c.notificationCh, deliveryInfo, elapsed)
 	eventAck(c.name, routingKey, elapsed)
-	c.log().Debug("message processed",
+	c.log().Debug(
+		"message processed",
 		"routingKey", routingKey,
 		"durationMs", elapsed,
 	)
