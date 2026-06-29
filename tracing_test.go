@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sparetimecoders/messaging/specification/spec"
+	spec "github.com/sparetimecoders/messaging"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/attribute"
@@ -59,7 +59,8 @@ func TestTracingPublishAndConsume(t *testing.T) {
 	conn, err := NewConnection("tracing-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithTracing(tp),
 		EventStreamPublisher(pub),
 		EventStreamConsumer("Order.Created", handler),
@@ -131,7 +132,8 @@ func TestCustomSpanNameFn(t *testing.T) {
 	conn, err := NewConnection("span-svc", url)
 	require.NoError(t, err)
 
-	err = conn.Start(context.Background(),
+	err = conn.Start(
+		context.Background(),
 		WithTracing(tp),
 		WithSpanNameFn(func(info spec.DeliveryInfo) string {
 			return "custom:" + info.Key
